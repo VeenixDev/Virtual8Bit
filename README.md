@@ -22,6 +22,8 @@ These 4 registers can be used by the developers to store any data.
 
 ## Instructions
 
+If you want to get only the instructions you can use `cat README.md | tail -n 35 | head -n 31`.
+
 | Name      | Op-Code | Description                                        |
 |-----------|---------|----------------------------------------------------|
 | MovLitR1  | 0x10    | Moves a literal to R1                              |
