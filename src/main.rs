@@ -1,8 +1,10 @@
+use std::env;
 mod cpu;
+mod lang;
 use crate::cpu::instructions::Instructions;
 
-fn main() {
-  let mut mem: [u8; 256] = [0u8; 256];
+fn run_machine() {
+	let mut mem: [u8; 256] = [0u8; 256];
   
   mem[0] = Instructions::MovLitR1 as u8;
   mem[1] = 0x10;
@@ -34,4 +36,28 @@ fn main() {
   cpu.debug();
   cpu.step();
   cpu.debug();
+}
+
+fn main() {
+	let args: Vec<String> = env::args().collect();
+	
+	match args.get(1).unwrap_or(&String::from("")).to_owned() {
+	  x if x == String::from("run") => {
+	  	run_machine();
+	  },
+	  x if x == String::from("compile") => {	  	
+	  	if args.len() != 3 {	  		
+	  		println!("Invalid file_name");
+	  		return ();
+	  	}
+	  	let file_name: &String = args.get(2).unwrap();
+	  	
+	  	lang::compile(file_name);
+	  	println!("Compile {}!", args.get(2).unwrap());	
+	  },
+	  _ => {
+	  	println!("Usage: cargo run <run|compile> [filename]");
+	  	return ();
+	  },
+	};
 }

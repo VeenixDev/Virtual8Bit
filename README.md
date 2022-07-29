@@ -53,3 +53,7 @@ These 4 registers can be used by the developers to store any data.
 | ModRegReg | 0x38    | Modulos two registers                              |
 | ModRegLit | 0x39    | Modulos a literal from a register                  |
 | ModLitReg | 0x40    | Modulos a register from a literal                  |
+
+## Lang
+
+There is a "assembly" for the machine whichs compiler is located at src/lang.rs
