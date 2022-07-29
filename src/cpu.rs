@@ -20,7 +20,7 @@ impl CPU {
   }
   
   pub fn set_register(&mut self, reg: Registers, value: u8) -> () {
-  	self.registers[reg as usize] = value;
+  	self.registers[reg as usize] = value & 0xff;
   }
   
   pub fn fetch(&mut self) -> u8 {
@@ -32,7 +32,6 @@ impl CPU {
   
   pub fn execute(&mut self, instruction: u8) -> () {
     match instruction {
-      // Move literal to r1
       x if x == instructions::Instructions::MovLitR1 as u8 => {
         let literal: u8 = self.fetch();
         self.set_register(Registers::R1, literal);
@@ -43,13 +42,190 @@ impl CPU {
         self.set_register(Registers::R2, literal);
         return ();
       },
-      // Add register to register
+      x if x == instructions::Instructions::MovLitR3 as u8 => {
+      	let literal: u8 = self.fetch();
+      	self.set_register(Registers::R3, literal);
+      	return ();
+      },
+      x if x == instructions::Instructions::MovLitR4 as u8 => {
+      	let literal: u8 = self.fetch();
+      	self.set_register(Registers::R4, literal);
+      	return ();
+      },
+      x if x == instructions::Instructions::MovRegR1 as u8 => {
+      	let reg: u8 = self.fetch();
+      	let register_value: u8 = self.registers[usize::from(reg)];
+      	self.set_register(Registers::R1, register_value);
+      	return ();
+      },
+      x if x == instructions::Instructions::MovRegR2 as u8 => {
+      	let reg: u8 = self.fetch();
+      	let register_value: u8 = self.registers[usize::from(reg)];
+      	self.set_register(Registers::R2, register_value);
+      	return ();
+      },
+      x if x == instructions::Instructions::MovRegR3 as u8 => {
+      	let reg: u8 = self.fetch();
+      	let register_value: u8 = self.registers[usize::from(reg)];
+      	self.set_register(Registers::R3, register_value);
+      	return ();
+      },
+      x if x == instructions::Instructions::MovRegR4 as u8 => {
+      	let reg: u8 = self.fetch();
+      	let register_value: u8 = self.registers[usize::from(reg)];
+      	self.set_register(Registers::R4, register_value);
+      	return ();
+      },
       x if x == instructions::Instructions::AddRegReg as u8 => {
         let r1: u8 = self.fetch();
         let r2: u8 = self.fetch();
         let register_value1: u8 = self.registers[usize::from(r1)];
         let register_value2: u8 = self.registers[usize::from(r2)];
         self.set_register(Registers::ACC, register_value1 + register_value2);
+      	return ();
+      },
+      x if x == instructions::Instructions::AddRegLit as u8 => {
+      	let reg: u8 = self.fetch();
+      	let lit: u8 = self.fetch();
+      	let register_value: u8 = self.registers[usize::from(reg)];
+      	self.set_register(Registers::ACC, register_value + lit);
+      	return ();
+      },
+      x if x == instructions::Instructions::OrRegReg as u8 => {
+      	let r1: u8 = self.fetch();
+      	let r2: u8 = self.fetch();
+      	let register_value1: u8 = self.registers[usize::from(r1)];
+      	let register_value2: u8 = self.registers[usize::from(r2)];
+      	self.set_register(Registers::ACC, register_value1 | register_value2);
+      	return ();
+      },
+      x if x == instructions::Instructions::OrRegLit as u8 => {
+      	let reg: u8 = self.fetch();
+      	let lit: u8 = self.fetch();
+      	let register_value: u8 = self.registers[usize::from(reg)];
+      	self.set_register(Registers::ACC, register_value | lit);
+      	return ();
+      },
+      x if x == instructions::Instructions::AndRegReg as u8 => {
+      	let r1: u8 = self.fetch();
+      	let r2: u8 = self.fetch();
+      	let register_value1: u8 = self.registers[usize::from(r1)];
+      	let register_value2: u8 = self.registers[usize::from(r2)];
+      	self.set_register(Registers::ACC, register_value1 & register_value2);
+      	return ();
+      },
+      x if x == instructions::Instructions::AndRegLit as u8 => {
+      	let reg: u8 = self.fetch();
+      	let lit: u8 = self.fetch();
+      	let register_value: u8 = self.registers[usize::from(reg)];
+      	self.set_register(Registers::ACC, register_value & lit);
+      	return ();
+      },
+      x if x == instructions::Instructions::XorRegReg as u8 => {
+      	let r1: u8 = self.fetch();
+      	let r2: u8 = self.fetch();
+      	let register_value1: u8 = self.registers[usize::from(r1)];
+      	let register_value2: u8 = self.registers[usize::from(r2)];
+      	self.set_register(Registers::ACC, register_value1 ^ register_value2);
+      	return ();
+      },
+      x if x == instructions::Instructions::XorRegLit as u8 => {
+      	let reg: u8 = self.fetch();
+      	let lit: u8 = self.fetch();
+      	let register_value: u8 = self.registers[usize::from(reg)];
+      	self.set_register(Registers::ACC, register_value ^ lit);
+      	return ();
+      },
+      x if x == instructions::Instructions::NotReg as u8 => {
+      	let reg: u8 = self.fetch();
+      	let register_value: u8 = self.registers[usize::from(reg)];
+      	self.set_register(Registers::ACC, !register_value);
+      	return ();
+      },
+      x if x == instructions::Instructions::NotLit as u8 => {
+      	let lit: u8 = self.fetch();
+      	self.set_register(Registers::ACC, !lit);
+      	return ();
+      },
+      x if x == instructions::Instructions::SubRegReg as u8 => {
+      	let r1 = self.fetch();
+      	let r2 = self.fetch();
+      	let register_value1 = self.registers[usize::from(r1)];
+      	let register_value2 = self.registers[usize::from(r2)];
+      	self.set_register(Registers::ACC, register_value1 - register_value2);
+      	return ();
+      },
+      x if x == instructions::Instructions::SubRegLit as u8 => {
+      	let reg = self.fetch();
+      	let lit = self.fetch();
+      	let register_value = self.registers[usize::from(reg)];
+      	self.set_register(Registers::ACC, register_value - lit);
+      	return ();
+      },
+      x if x == instructions::Instructions::SubLitReg as u8 => {
+      	let reg = self.fetch();
+      	let lit = self.fetch();
+      	let register_value = self.registers[usize::from(reg)];
+      	self.set_register(Registers::ACC, lit - register_value);
+      	return ();
+      },
+      x if x == instructions::Instructions::MulRegReg as u8 => {
+      	let r1 = self.fetch();
+      	let r2 = self.fetch();
+      	let register_value1 = self.registers[usize::from(r1)];
+      	let register_value2 = self.registers[usize::from(r2)];
+      	self.set_register(Registers::ACC, register_value1 * register_value2);
+      	return ();
+      },
+      x if x == instructions::Instructions::MulRegLit as u8 => {
+      	let reg = self.fetch();
+      	let lit = self.fetch();
+      	let register_value = self.registers[usize::from(reg)];
+      	self.set_register(Registers::ACC, register_value * lit);
+      	return ();
+      },
+      x if x == instructions::Instructions::DivRegReg as u8 => {
+      	let r1 = self.fetch();
+      	let r2 = self.fetch();
+      	let register_value1 = self.registers[usize::from(r1)];
+      	let register_value2 = self.registers[usize::from(r2)];
+      	self.set_register(Registers::ACC, register_value1 / register_value2);
+      	return ();
+      },
+      x if x == instructions::Instructions::DivRegLit as u8 => {
+      	let reg = self.fetch();
+      	let lit = self.fetch();
+      	let register_value = self.registers[usize::from(reg)];
+      	self.set_register(Registers::ACC, register_value / lit);
+      	return ();
+      },
+      x if x == instructions::Instructions::DivLitReg as u8 => {
+      	let reg = self.fetch();
+      	let lit = self.fetch();
+      	let register_value = self.registers[usize::from(reg)];
+      	self.set_register(Registers::ACC, lit / register_value);
+      	return ();
+      },
+      x if x == instructions::Instructions::ModRegReg as u8 => {
+      	let r1 = self.fetch();
+      	let r2 = self.fetch();
+      	let register_value1 = self.registers[usize::from(r1)];
+      	let register_value2 = self.registers[usize::from(r2)];
+      	self.set_register(Registers::ACC, register_value1 % register_value2);
+      	return ();
+      },
+      x if x == instructions::Instructions::ModRegLit as u8 => {
+      	let reg = self.fetch();
+      	let lit = self.fetch();
+      	let register_value = self.registers[usize::from(reg)];
+      	self.set_register(Registers::ACC, register_value % lit);
+      	return ();
+      },
+      x if x == instructions::Instructions::ModLitReg as u8 => {
+      	let reg = self.fetch();
+      	let lit = self.fetch();
+      	let register_value = self.registers[usize::from(reg)];
+      	self.set_register(Registers::ACC, lit % register_value);
       	return ();
       },
       _ => { return () }

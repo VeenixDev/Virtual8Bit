@@ -14,8 +14,19 @@ fn main() {
   mem[5] = cpu::Registers::R1 as u8;
   mem[6] = cpu::Registers::R2 as u8;
   
+  mem[7] = Instructions::MovRegR3 as u8;
+  mem[8] = cpu::Registers::ACC as u8;
+  
+  mem[9] = Instructions::ModRegLit as u8;
+  mem[10] = cpu::Registers::R3 as u8;
+  mem[11] = 0x3;
+  
   let mut cpu = cpu::CPU::new(mem);
   
+  cpu.debug();
+  cpu.step();
+  cpu.debug();
+  cpu.step();
   cpu.debug();
   cpu.step();
   cpu.debug();
